@@ -29,8 +29,8 @@ src/
 │   ├── UserList.tsx
 │   ├── UserCard.tsx
 │   ├── FilterInput.tsx
-│   ├── Pagination.tsx
-│   └── LoadingState.tsx
+│   ├── LoadingSpinner.tsx
+│   └── EmptyState.tsx
 │
 ├── pages/              # Page components
 │   └── Home.tsx
@@ -41,14 +41,16 @@ src/
 ├── hooks/              # Custom React hooks
 │   └── useGitHubUsers.ts
 │
+├── types/              # TypeScript interfaces
+│   └── github.ts
+│
 ├── App.tsx             # Main App component with routing
-├── index.css           # Tailwind CSS setup
+├── index.css           # Global styles
 └── main.tsx            # React entry point
 
 public/                 # Static assets
-Dockerfile              # Docker configuration
-README.md              # This file
-tsconfig.json          # TypeScript configuration
+README.md               # This file
+tsconfig.json           # TypeScript configuration
 ```
 
 ---
@@ -127,41 +129,26 @@ tsconfig.json          # TypeScript configuration
 
 ---
 
-## � API Service Layer
+## 🗂️ API Service Layer
 
 ### File: `src/services/githubAPI.ts`
 
-TypeScript API service handling all GitHub API interactions with proper error handling and type safety:
-
 **Exported Types:**
-- `GitHubUser` - Basic user object from API
-- `GitHubUserProfile` - Extended user profile with detailed info
-- `RateLimit` - API rate limit information
+- `GitHubUser` - User object from API
 - `APIError` - Standardized error type
 
 **Exported Functions:**
 
-1. **`fetchUsers(page)`** - Fetch paginated list of GitHub users
-   - Parameter: `page: number` (1-based page number)
-   - Returns: `Promise<GitHubUser[]>`
-   - Uses pagination with `since` parameter for efficient fetching
-
-2. **`fetchUserProfile(username)`** - Fetch single user's detailed profile
-   - Parameter: `username: string` (GitHub username)
-   - Returns: `Promise<GitHubUserProfile>`
-   - Useful for future user details page
-
-3. **`checkRateLimit()`** - Check GitHub API rate limit status
-   - Returns: `Promise<RateLimit>`
-   - Helps monitor API usage
+- **`fetchUsers(page, perPage)`** - Fetch a page of GitHub users
+  - `page: number` — 1-based page number
+  - `perPage: number` — results per page (1–200, default 10)
+  - Returns: `Promise<GitHubUser[]>`
 
 **Features:**
 - ✅ Full TypeScript type safety
 - ✅ Axios-based HTTP client with error handling
 - ✅ Meaningful error messages with status codes
-- ✅ GitHub API v3 headers
-- ✅ Pagination support (10 users per page)
-- ✅ Rate limit aware
+- ✅ Configurable page size (1–200)
 
 ---
 
@@ -169,57 +156,49 @@ TypeScript API service handling all GitHub API interactions with proper error ha
 
 ### File: `src/hooks/useGitHubUsers.ts`
 
-A React hook that handles data fetching and state management (prepared for infinite scroll/virtual scroll pattern).
+Manages all data fetching, pagination, and filtering state. Syncs `page` and `per_page` with URL search params.
 
 **Returns:**
 ```typescript
 {
-  users: GitHubUser[]              // Accumulated array of all fetched users
-  loading: boolean                 // Loading state
-  error: APIError | null           // Error message if fetch failed
-  hasMore: boolean                 // True if more users available to load
-  loadMore: () => Promise<void>    // Function to load next page
+  users: GitHubUser[]        // Filtered list for current page
+  loading: boolean
+  error: APIError | null
+  page: number               // Current page (from URL)
+  hasNext: boolean
+  hasPrev: boolean
+  goNext: () => void
+  goPrev: () => void
+  perPage: number            // Current page size (from URL)
+  setPerPage: (n: number) => void
+  from: number               // First item index on current page
+  to: number                 // Last item index on current page
+  filterText: string
+  setFilterText: (s: string) => void
 }
 ```
 
 **Features:**
-- ✅ Initial load on component mount (page 1)
-- ✅ `loadMore()` function for progressive loading
-- ✅ Accumulates users across multiple pages
-- ✅ Tracks `hasMore` for stopping infinite scroll
-- ✅ Handles loading state during each load
-- ✅ Error handling for API failures
-- ✅ TypeScript typed return value
-- ✅ Ready for virtual scroll/infinite scroll implementation
-
-**Architecture:**
-- Uses `useRef` to track current page
-- Appends new users to existing array (not replacing)
-- Prevents duplicate loads with `loading` and `hasMore` checks
+- ✅ Page and perPage persisted in URL (`?page=2&per_page=25`)
+- ✅ Client-side filtering with `useMemo`
+- ✅ Filter resets on page or perPage change
+- ✅ Stale request cancellation via cleanup flag
 
 **Usage:**
 ```typescript
-const { users, loading, error, hasMore, loadMore } = useGitHubUsers()
-// Later: attach loadMore() to scroll event for infinite scroll
+const { users, loading, error, page, goNext, goPrev } = useGitHubUsers()
 ```
 
 ---
 
-### Custom Hook: `useGitHubUsers`
-```javascript
-// Returns: { users, loading, error, hasMore, loadMore }
-// Ready for infinite scroll implementation
-```
-
 ### Component Hierarchy
 ```
-App
-└── Home Page
-    ├── FilterInput
-    ├── UserList
-    │   └── UserCard (repeated for each user)
-    ├── Pagination
-    └── LoadingState/ErrorMessage
+App → Home → Header
+           → FilterInput + per-page selector
+           → LoadingSpinner (while fetching)
+           → EmptyState     (no filter results)
+           → UserList → UserCard (× n)
+           → Pagination bar
 ```
 
 ---
@@ -229,7 +208,7 @@ App
 **Endpoint**: `https://api.github.com/users`
 
 **Parameters**:
-- `per_page` - Number of users per page (10)
+- `per_page` - Number of users per page (1–200, default 10)
 - `page` - Page number (1-based)
 - `since` - User ID offset for pagination (0-based)
 
