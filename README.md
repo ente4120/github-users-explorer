@@ -201,6 +201,8 @@ const {
 
 > **Virtual / Infinite Scroll ready** — `hasNext` and `goNext` are all that's needed. To switch: accumulate pages instead of replacing, and call `goNext` on scroll-to-bottom.
 
+> **Note on React Router**: The app uses React Router solely for `useSearchParams` to persist `page` and `per_page` in the URL. There is only one route. A lighter alternative would be managing `window.location.search` directly, but `useSearchParams` keeps the code clean and idiomatic.
+
 ---
 
 ## Steps of Build
