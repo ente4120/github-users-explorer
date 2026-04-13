@@ -9,15 +9,13 @@ const PER_PAGE = 10
  * @param {number} page - Page number (1-based)
  * @returns {Promise<GitHubUser[]>} Array of user objects
  */
-export const fetchUsers = async (page: number = 1): Promise<GitHubUser[]> => {
+export const fetchUsers = async (page: number = 1, perPage: number = PER_PAGE): Promise<GitHubUser[]> => {
   try {
-    // Calculate the 'since' parameter for pagination
-    // GitHub API uses 'since' (user ID offset) for pagination
-    const since = (page - 1) * PER_PAGE;
+    const since = (page - 1) * perPage;
 
     const response = await axios.get<GitHubUser[]>(`${API_BASE_URL}/users`, {
       params: {
-        per_page: PER_PAGE,
+        per_page: perPage,
         since: since,
       },
     });

@@ -3,11 +3,18 @@ import { useSearchParams } from 'react-router-dom'
 import { fetchUsers } from '../services'
 import { GitHubUser, APIError } from '../types'
 
-const PER_PAGE = 10
+const PER_PAGE_OPTIONS = [10, 25, 50, 100, 200]
+const DEFAULT_PER_PAGE = 10
+const MIN_PER_PAGE = 1
+const MAX_PER_PAGE = 200
 
 export function useGitHubUsers() {
   const [searchParams, setSearchParams] = useSearchParams()
   const page = Math.max(1, Number(searchParams.get('page')) || 1)
+  const rawPerPage = Number(searchParams.get('per_page'))
+  const perPage = rawPerPage >= MIN_PER_PAGE && rawPerPage <= MAX_PER_PAGE
+    ? rawPerPage
+    : DEFAULT_PER_PAGE
 
   const [allUsers, setAllUsers] = useState<GitHubUser[]>([])
   const [loading, setLoading] = useState(true)
@@ -22,10 +29,10 @@ export function useGitHubUsers() {
       try {
         setLoading(true)
         setError(null)
-        const data = await fetchUsers(page)
+        const data = await fetchUsers(page, perPage)
         if (!cancelled) {
           setAllUsers(data)
-          setHasNext(data.length === PER_PAGE)
+          setHasNext(data.length === perPage)
         }
       } catch (err) {
         if (!cancelled) setError(err as APIError)
@@ -36,7 +43,7 @@ export function useGitHubUsers() {
 
     load()
     return () => { cancelled = true }
-  }, [page])
+  }, [page, perPage])
 
   const setPage = (next: number) => {
     setFilterText('')
@@ -46,6 +53,13 @@ export function useGitHubUsers() {
     } else {
       setSearchParams({ page: String(next) })
     }
+  }
+
+  const setPerPage = (value: number) => {
+    setFilterText('')
+    const next = new URLSearchParams()
+    next.set('per_page', String(value))
+    setSearchParams(next)
   }
 
   const goNext = () => { if (!loading && hasNext) setPage(page + 1) }
@@ -58,6 +72,9 @@ export function useGitHubUsers() {
     )
   }, [allUsers, filterText])
 
+  const from = (page - 1) * perPage + 1
+  const to = from + allUsers.length - 1
+
   return {
     users,
     loading,
@@ -67,6 +84,11 @@ export function useGitHubUsers() {
     hasPrev: page > 1,
     goNext,
     goPrev,
+    perPage,
+    setPerPage,
+    perPageOptions: PER_PAGE_OPTIONS,
+    from,
+    to,
     filterText,
     setFilterText,
   }

@@ -5,6 +5,8 @@ export function Home() {
   const {
     users, loading, error,
     page, hasNext, hasPrev, goNext, goPrev,
+    perPage, setPerPage,
+    from, to,
     filterText, setFilterText,
   } = useGitHubUsers()
 
@@ -19,11 +21,9 @@ export function Home() {
             <circle cx="9.5" cy="8" r="3.2" />
             <path d="M9.5 13C6.46 13 4 15.46 4 18.5V19h11v-.5C15 15.46 12.54 13 9.5 13z" />
           </svg>
-
           <span className="text-white font-semibold text-sm whitespace-nowrap">
             GitHub Users Explorer
           </span>
-
         </div>
       </header>
 
@@ -38,8 +38,24 @@ export function Home() {
           )}
         </div>
 
-        <div className="mb-4">
-          <FilterInput value={filterText} onChange={setFilterText} />
+        {/* Filter + per page */}
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex-1">
+            <FilterInput value={filterText} onChange={setFilterText} />
+          </div>
+
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <label className="text-xs text-[#656d76] whitespace-nowrap">Per page</label>
+            <select
+              value={perPage}
+              onChange={(e) => setPerPage(Number(e.target.value))}
+              className="px-2 py-[5px] text-sm text-[#24292f] bg-white border border-[#d0d7de] rounded-md focus:outline-none focus:border-[#0969da] transition-colors cursor-pointer"
+            >
+              {[10, 25, 50, 100, 200].map((n) => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {loading && <LoadingSpinner />}
@@ -70,7 +86,15 @@ export function Home() {
               Previous
             </button>
 
-            <span className="text-sm text-[#656d76]">Page {page}</span>
+            <div className="flex items-center gap-1.5 text-sm text-[#656d76]">
+              <span className="font-medium text-[#1f2328]">Page {page}</span>
+              {!loading && users.length > 0 && (
+                <>
+                  <span>·</span>
+                  <span>items {from}–{to}</span>
+                </>
+              )}
+            </div>
 
             <button
               onClick={goNext}
