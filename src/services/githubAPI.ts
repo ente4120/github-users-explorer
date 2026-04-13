@@ -7,6 +7,7 @@ const PER_PAGE = 10
 /**
  * Fetch GitHub users with pagination
  * @param {number} page - Page number (1-based)
+ * @param {number} perPage - Results per page (1–200, default 10)
  * @returns {Promise<GitHubUser[]>} Array of user objects
  */
 export const fetchUsers = async (page: number = 1, perPage: number = PER_PAGE): Promise<GitHubUser[]> => {
@@ -23,7 +24,6 @@ export const fetchUsers = async (page: number = 1, perPage: number = PER_PAGE): 
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
-    console.error('Error fetching users:', error);
     throw {
       message: axiosError.response?.data?.message || 'Failed to fetch users from GitHub API',
       status: axiosError.response?.status,

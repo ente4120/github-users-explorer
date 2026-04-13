@@ -5,8 +5,9 @@ export function Home() {
   const {
     users, loading, error,
     page, hasNext, hasPrev, goNext, goPrev,
-    perPage, setPerPage,
+    perPage, setPerPage, perPageOptions,
     from, to,
+    retry,
     filterText, setFilterText,
   } = useGitHubUsers()
 
@@ -51,22 +52,32 @@ export function Home() {
               onChange={(e) => setPerPage(Number(e.target.value))}
               className="px-2 py-[5px] text-sm text-[#24292f] bg-white border border-[#d0d7de] rounded-md focus:outline-none focus:border-[#0969da] transition-colors cursor-pointer"
             >
-              {[10, 25, 50, 100, 200].map((n) => (
+              {perPageOptions.map((n) => (
                 <option key={n} value={n}>{n}</option>
               ))}
             </select>
           </div>
         </div>
 
-        {loading && <LoadingSpinner />}
+        {loading && users.length === 0 && <LoadingSpinner />}
 
         {!loading && error && (
-          <div className="p-4 rounded-md border border-[#ffebe9] bg-[#fff8f8] text-[#82071e] text-sm">
-            ⚠️ {error.message}
+          <div className="p-4 rounded-md border border-[#ffebe9] bg-[#fff8f8] text-[#82071e] text-sm flex items-center justify-between">
+            <span>⚠️ {error.message}</span>
+            <button
+              onClick={retry}
+              className="ml-4 px-3 py-1 text-sm font-medium text-[#82071e] border border-[#82071e]/30 rounded-md hover:bg-[#82071e]/10 transition-colors whitespace-nowrap"
+            >
+              Try again
+            </button>
           </div>
         )}
 
-        {!loading && users.length > 0 && <UserList users={users} />}
+        {users.length > 0 && (
+          <div className={loading ? 'opacity-50 pointer-events-none transition-opacity' : ''}>
+            <UserList users={users} />
+          </div>
+        )}
 
         {!loading && users.length === 0 && filterText && (
           <EmptyState message={`No results for "${filterText}"`} icon="🔍" />

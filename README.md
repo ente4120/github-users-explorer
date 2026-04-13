@@ -14,8 +14,9 @@ A React application that displays GitHub users with filtering and pagination fun
 - **Step 7**: Filtering implemented (real-time, case-insensitive, clears on page change)
 - **Dependencies**: React Router, Axios installed
 
+- **Step 8**: Final refinements (retry button, loading UX, code cleanup, perPageOptions deduplication)
+
 ### In Progress 🔄
-- Step 8: Final refinements
 - Step 9: Docker setup
 - Step 10: Final documentation
 

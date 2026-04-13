@@ -21,6 +21,7 @@ export function useGitHubUsers() {
   const [error, setError] = useState<APIError | null>(null)
   const [hasNext, setHasNext] = useState(true)
   const [filterText, setFilterText] = useState('')
+  const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -43,7 +44,7 @@ export function useGitHubUsers() {
 
     load()
     return () => { cancelled = true }
-  }, [page, perPage])
+  }, [page, perPage, retryCount])
 
   const setPage = (next: number) => {
     setFilterText('')
@@ -64,6 +65,7 @@ export function useGitHubUsers() {
 
   const goNext = () => { if (!loading && hasNext) setPage(page + 1) }
   const goPrev = () => { if (!loading && page > 1) setPage(page - 1) }
+  const retry = () => setRetryCount((c) => c + 1)
 
   const users = useMemo(() => {
     if (!filterText.trim()) return allUsers
@@ -89,6 +91,7 @@ export function useGitHubUsers() {
     perPageOptions: PER_PAGE_OPTIONS,
     from,
     to,
+    retry,
     filterText,
     setFilterText,
   }
