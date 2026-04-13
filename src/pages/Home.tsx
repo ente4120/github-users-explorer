@@ -16,13 +16,8 @@ export function Home() {
       {/* Navbar */}
       <header className="bg-[#24292f] sticky top-0 z-10">
         <div className="max-w-screen-lg mx-auto px-4 h-14 flex items-center gap-3">
-          <svg width="28" height="28" viewBox="0 0 24 24" className="fill-white flex-shrink-0" aria-hidden="true">
-            <circle cx="14.5" cy="7" r="3" opacity="0.6" />
-            <path d="M14.5 12c-2.1 0-4 .9-5.3 2.3A6.96 6.96 0 0 0 14.5 16c1.5 0 2.9-.5 4-1.3A6.55 6.55 0 0 0 14.5 12z" opacity="0.6" />
-            <circle cx="9.5" cy="8" r="3.2" />
-            <path d="M9.5 13C6.46 13 4 15.46 4 18.5V19h11v-.5C15 15.46 12.54 13 9.5 13z" />
-          </svg>
-          <span className="text-white font-semibold text-sm whitespace-nowrap">
+          <img src="/cat_head_white.svg" width="28" height="28" alt="" aria-hidden="true" className="flex-shrink-0" />
+          <span className="text-white font-bold text-xl whitespace-nowrap">
             GitHub Users Explorer
           </span>
         </div>

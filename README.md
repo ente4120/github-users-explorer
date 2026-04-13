@@ -1,220 +1,129 @@
-# GitHub Users Explorer 🔍
+# GitHub Users Explorer
 
-A React application that displays GitHub users with filtering and pagination functionality.
+<img src="public/cat_head_black.svg" width="80" height="80" alt="App Icon" />
 
-## 📋 Project Status
+![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white&labelColor=20232a)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646cff?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ed?logo=docker&logoColor=white)
 
-### Completed Steps ✅
-- **Step 1**: Vite + React + Tailwind CSS initialized
-- **Step 2**: Folder structure created
-- **Step 3**: API service layer created (`githubAPI.ts`)
-- **Step 4**: Custom hook created (`useGitHubUsers.ts`)
-- **Step 5**: Components built (`UserCard`, `UserList`, `FilterInput`, `LoadingSpinner`, `EmptyState`)
-- **Step 6**: Pagination implemented (Previous/Next buttons, page number, URL params, filter reset on navigation)
-- **Step 7**: Filtering implemented (real-time, case-insensitive, clears on page change)
-- **Dependencies**: React Router, Axios installed
-
-- **Step 8**: Final refinements (retry button, loading UX, code cleanup, perPageOptions deduplication)
-
-- **Step 9**: Docker setup (multi-stage build, Nginx, React Router support)
-
-### In Progress 🔄
-- Step 10: Final documentation
+A React + TypeScript application for browsing GitHub users with real-time filtering, pagination, and a GitHub-inspired UI.
 
 ---
 
-## 🏗️ Project Structure
+## Tech Stack
+
+| | |
+|---|---|
+| **React 18** | UI library |
+| **TypeScript** | Static typing |
+| **Vite** | Build tool & dev server |
+| **Tailwind CSS** | Utility-first CSS |
+| **React Router v6** | Routing + URL-persisted state |
+| **Axios** | HTTP client |
+
+---
+
+## Quick Start
+
+### Prerequisites
+- Node.js v16+
+- npm
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # production build
+```
+
+### Docker
+
+```bash
+docker-compose up --build   # http://localhost:8080
+```
+
+Or manually:
+
+```bash
+docker build -t github-users-explorer .
+docker run -p 8080:80 github-users-explorer
+```
+
+---
+
+## Features
+
+**Browsing & Pagination**
+- Previous / Next navigation with page number and item range (`items 1–10`)
+- Page and per-page size persisted in URL (`?page=2&per_page=25`)
+- Configurable results per page: 10, 25, 50, 100, 200
+
+**Filtering**
+- Real-time, case-insensitive search by username
+- Client-side filtering via `useMemo`
+- Filter auto-resets on page or per-page change
+
+**Loading & Error States**
+- Spinner on initial load
+- Previous page stays visible (dimmed) while next page loads
+- Error banner with "Try again" retry button
+
+**User Cards**
+- Avatar, username, link to GitHub profile
+- Color-coded type badge — green for User, yellow for Organization
+
+**Docker**
+- Multi-stage build: `node:20-alpine` → `nginx:alpine`
+- React Router deep-link support via Nginx `try_files`
+
+---
+
+## Project Structure
 
 ```
 src/
-├── components/          # Reusable React components
+├── components/
 │   ├── UserCard.tsx
 │   ├── UserList.tsx
 │   ├── FilterInput.tsx
 │   ├── LoadingSpinner.tsx
 │   ├── EmptyState.tsx
 │   └── index.ts
-│
-├── pages/               # Page components
+├── pages/
 │   └── Home.tsx
-│
-├── services/            # API service layer
+├── services/
 │   ├── githubAPI.ts
 │   └── index.ts
-│
-├── hooks/               # Custom React hooks
+├── hooks/
 │   ├── useGitHubUsers.ts
 │   └── index.ts
-│
-├── types/               # TypeScript interfaces
+├── types/
 │   ├── github.ts
 │   └── index.ts
-│
-├── App.tsx              # Main App component with routing
-├── index.css            # Global styles
-└── main.tsx             # React entry point
+├── App.tsx
+├── index.css
+└── main.tsx
 
 public/
-├── favicon.svg
-└── icons.svg
+├── cat_head_white.svg    # Navbar icon
+└── cat_head_black.svg    # Browser tab favicon
 
-Dockerfile               # Multi-stage Docker build
-docker-compose.yml       # Docker Compose config
-.dockerignore
-.gitignore
-index.html               # Vite entry point
+Dockerfile
+docker-compose.yml
+index.html
 package.json
 tailwind.config.js
 tsconfig.json
-tsconfig.node.json
 vite.config.js
 ```
 
----
-
-## 🛠️ Tech Stack
-
-- **React 18** - UI library
-- **TypeScript** - JavaScript with static typing
-- **Vite** - Build tool & dev server
-- **Tailwind CSS** - Utility-first CSS framework
-- **React Router v6** - Client-side routing
-- **Axios** - HTTP client for API calls
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Installation & Setup
-
-1. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-2. **Run development server**:
-   ```bash
-   npm run dev
-   ```
-   The app will open at `http://localhost:5173`
-
-3. **Build for production**:
-   ```bash
-   npm run build
-   ```
-
----
-
-## ✨ Features (To Be Implemented)
-
-### 1. Data Fetching ⏳
-- Fetch GitHub users from: `https://api.github.com/users?per_page=10&page=1&since=0`
-- Pagination support via `since` parameter
-- Error handling for API failures
-
-### 2. User Display ⏳
-- Avatar (40x40px, rounded)
-- Username from `login` field
-- Clickable link to GitHub profile (`html_url`)
-- Rendered as unordered list with proper styling
-
-### 3. Filtering ⏳
-- Real-time search by username (case-insensitive)
-- Client-side filtering of currently loaded users
-- Clear filter when changing pages
-
-### 4. Pagination ⏳
-- Display current page number
-- "Previous" and "Next" buttons
-- Disable "Previous" on page 1
-- Disable buttons during loading
-- Reset filter on page change
-
-### 5. Loading & Error States ⏳
-- "Loading users..." message during fetch
-- Error message display for failed API calls
-- "No users found" when filter returns empty
-- Disabled navigation during loading
-
-### 6. Docker Setup ✅
-- Multi-stage Dockerfile (Node build → Nginx serve)
-- `docker-compose.yml` for easy startup
-
----
-
-## 🗂️ API Service Layer
-
-### File: `src/services/githubAPI.ts`
-
-**Exported Types:**
-- `GitHubUser` - User object from API
-- `APIError` - Standardized error type
-
-**Exported Functions:**
-
-- **`fetchUsers(page, perPage)`** - Fetch a page of GitHub users
-  - `page: number` — 1-based page number
-  - `perPage: number` — results per page (1–200, default 10)
-  - Returns: `Promise<GitHubUser[]>`
-
-**Features:**
-- ✅ Full TypeScript type safety
-- ✅ Axios-based HTTP client with error handling
-- ✅ Meaningful error messages with status codes
-- ✅ Configurable page size (1–200)
-
----
-
-## 🎣 Custom Hook
-
-### File: `src/hooks/useGitHubUsers.ts`
-
-Manages all data fetching, pagination, and filtering state. Syncs `page` and `per_page` with URL search params.
-
-**Returns:**
-```typescript
-{
-  users: GitHubUser[]        // Filtered list for current page
-  loading: boolean
-  error: APIError | null
-  page: number               // Current page (from URL)
-  hasNext: boolean
-  hasPrev: boolean
-  goNext: () => void
-  goPrev: () => void
-  perPage: number            // Current page size (from URL)
-  setPerPage: (n: number) => void
-  from: number               // First item index on current page
-  to: number                 // Last item index on current page
-  filterText: string
-  setFilterText: (s: string) => void
-}
-```
-
-**Features:**
-- ✅ Page and perPage persisted in URL (`?page=2&per_page=25`)
-- ✅ Client-side filtering with `useMemo`
-- ✅ Filter resets on page or perPage change
-- ✅ Stale request cancellation via cleanup flag
-
-> **Virtual / Infinite Scroll ready** — The hook exposes `hasNext` and `goNext` which are all that's needed to drive an infinite scroll implementation. To switch: accumulate pages instead of replacing, and trigger `goNext` on scroll-to-bottom.
-
-**Usage:**
-```typescript
-const { users, loading, error, page, goNext, goPrev } = useGitHubUsers()
-```
-
----
-
 ### Component Hierarchy
+
 ```
-App → Home → Header
+App → Home → Header (navbar)
            → FilterInput + per-page selector
-           → LoadingSpinner (while fetching)
+           → LoadingSpinner (initial load)
            → EmptyState     (no filter results)
            → UserList → UserCard (× n)
            → Pagination bar
@@ -222,16 +131,19 @@ App → Home → Header
 
 ---
 
-## 🔗 API Reference
+## API Reference
 
 **Endpoint**: `https://api.github.com/users`
 
-**Parameters**:
-- `per_page` - Number of users per page (1–200, default 10)
-- `page` - Page number (1-based)
-- `since` - User ID offset for pagination (0-based)
+| Parameter | Description |
+|-----------|-------------|
+| `per_page` | Results per page (1–200, default 10) |
+| `page` | Page number (1-based) |
+| `since` | User ID offset for pagination |
 
-**Response Sample**:
+> **Rate limit**: The GitHub API allows 60 unauthenticated requests per hour per IP. If you see errors after browsing many pages, wait a few minutes and try again.
+
+**Response sample**:
 ```json
 [
   {
@@ -239,43 +151,60 @@ App → Home → Header
     "id": 1,
     "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
     "html_url": "https://github.com/torvalds",
-    ...
+    "type": "User"
   }
 ]
 ```
 
 ---
 
-## 🎨 Styling Guidelines
+## API Service — `src/services/githubAPI.ts`
 
-- Use **Tailwind CSS utility classes** for all styling
-- Follow responsive design principles
-- Support light/dark mode (if using Tailwind extensions)
-- Maintain consistency with component styling
-
----
-
-## 🐳 Docker
-
-**With docker-compose (recommended):**
-```bash
-docker-compose up --build
-```
-App available at `http://localhost:8080`
-
-**With Docker directly:**
-```bash
-docker build -t github-users-explorer .
-docker run -p 8080:80 github-users-explorer
-```
-
-**Stack:**
-- `node:20-alpine` — build stage
-- `nginx:alpine` — serve stage (optimized final image)
-- React Router URLs handled via `try_files` so deep links and refreshes work correctly
-
-*Implementation in Step 9*
+| Export | Description |
+|--------|-------------|
+| `GitHubUser` | User object from the API |
+| `APIError` | Standardized error type |
+| `fetchUsers(page, perPage)` | Fetch one page of GitHub users |
 
 ---
 
-**Last Updated**: Step 5 - Components Built ✅
+## Custom Hook — `src/hooks/useGitHubUsers.ts`
+
+Manages all data fetching, pagination, filtering, and URL state.
+
+```typescript
+const {
+  users,          // Filtered list for current page
+  loading,
+  error,
+  page,
+  hasNext,
+  hasPrev,
+  goNext,
+  goPrev,
+  perPage,
+  setPerPage,
+  from,           // First item index on current page
+  to,             // Last item index on current page
+  retry,
+  filterText,
+  setFilterText,
+} = useGitHubUsers()
+```
+
+> **Virtual / Infinite Scroll ready** — `hasNext` and `goNext` are all that's needed. To switch: accumulate pages instead of replacing, and call `goNext` on scroll-to-bottom.
+
+---
+
+## Steps of Build
+
+1. Vite + React + Tailwind CSS initialized ✅
+2. Folder structure created ✅
+3. API service layer — `githubAPI.ts` ✅
+4. Custom hook — `useGitHubUsers.ts` ✅
+5. Components built — `UserCard`, `UserList`, `FilterInput`, `LoadingSpinner`, `EmptyState` ✅
+6. Pagination — Previous/Next, page number, URL params, filter reset on navigation ✅
+7. Filtering — real-time, case-insensitive, clears on page/size change ✅
+8. Final refinements — retry button, loading UX, per-page selector, code cleanup ✅
+9. Docker setup — multi-stage build, Nginx, React Router support ✅
+10. Final documentation ✅
