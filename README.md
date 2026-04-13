@@ -8,11 +8,14 @@ A React application that displays GitHub users with filtering and pagination fun
 - **Step 1**: Vite + React + Tailwind CSS initialized
 - **Step 2**: Folder structure created
 - **Step 3**: API service layer created (`githubAPI.js`)
+- **Step 4**: Custom hook created (`useGitHubUsers.ts`)
 - **Dependencies**: React Router, Axios installed
 
 ### In Progress 🔄
-- Step 4: Custom hook for data fetching
-- Step 5-8: Components & features
+- Step 5: Components (UserCard, UserList, etc)
+- Step 6: Filtering functionality
+- Step 7: Pagination functionality
+- Step 8: Final refinements
 - Step 9: Docker setup
 - Step 10: Final documentation
 
@@ -165,10 +168,50 @@ TypeScript API service handling all GitHub API interactions with proper error ha
 
 ---
 
+## 🎣 Custom Hook
+
+### File: `src/hooks/useGitHubUsers.ts`
+
+A React hook that handles data fetching and state management (prepared for infinite scroll/virtual scroll pattern).
+
+**Returns:**
+```typescript
+{
+  users: GitHubUser[]              // Accumulated array of all fetched users
+  loading: boolean                 // Loading state
+  error: APIError | null           // Error message if fetch failed
+  hasMore: boolean                 // True if more users available to load
+  loadMore: () => Promise<void>    // Function to load next page
+}
+```
+
+**Features:**
+- ✅ Initial load on component mount (page 1)
+- ✅ `loadMore()` function for progressive loading
+- ✅ Accumulates users across multiple pages
+- ✅ Tracks `hasMore` for stopping infinite scroll
+- ✅ Handles loading state during each load
+- ✅ Error handling for API failures
+- ✅ TypeScript typed return value
+- ✅ Ready for virtual scroll/infinite scroll implementation
+
+**Architecture:**
+- Uses `useRef` to track current page
+- Appends new users to existing array (not replacing)
+- Prevents duplicate loads with `loading` and `hasMore` checks
+
+**Usage:**
+```typescript
+const { users, loading, error, hasMore, loadMore } = useGitHubUsers()
+// Later: attach loadMore() to scroll event for infinite scroll
+```
+
+---
+
 ### Custom Hook: `useGitHubUsers`
 ```javascript
-// Returns: { users, filteredUsers, loading, error, page, filterText }
-// Methods: { setFilterText, nextPage, prevPage }
+// Returns: { users, loading, error, hasMore, loadMore }
+// Ready for infinite scroll implementation
 ```
 
 ### Component Hierarchy
@@ -229,4 +272,4 @@ Docker setup will include:
 
 ---
 
-**Last Updated**: Step 3 - API Service Layer + TypeScript Setup ✅
+**Last Updated**: Step 4 - Hook Updated for Infinite Scroll Pattern ✅

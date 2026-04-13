@@ -1,0 +1,1 @@
+export { useGitHubUsers } from './useGitHubUsers'
