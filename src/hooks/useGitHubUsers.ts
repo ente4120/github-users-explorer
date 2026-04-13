@@ -58,19 +58,25 @@ export function useGitHubUsers() {
 
   const setPage = (next: number) => {
     setFilterText('')
-    if (next <= 1) {
-      searchParams.delete('page')
-      setSearchParams(searchParams)
-    } else {
-      setSearchParams({ page: String(next) })
-    }
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev)
+      if (next <= 1) {
+        params.delete('page')
+      } else {
+        params.set('page', String(next))
+      }
+      return params
+    })
   }
 
   const setPerPage = (value: number) => {
     setFilterText('')
-    const next = new URLSearchParams()
-    next.set('per_page', String(value))
-    setSearchParams(next)
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev)
+      params.set('per_page', String(value))
+      params.delete('page')
+      return params
+    })
   }
 
   const goNext = () => { if (!loading && hasNext) setPage(page + 1) }

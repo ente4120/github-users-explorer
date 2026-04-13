@@ -2,7 +2,7 @@
 
 <img src="public/cat_head_black.svg" width="80" height="80" alt="App Icon" />
 
-![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white&labelColor=20232a)
+![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white&labelColor=20232a)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646cff?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss&logoColor=white)
@@ -16,11 +16,11 @@ A React + TypeScript application for browsing GitHub users with real-time filter
 
 | Library | Role |
 |---|---|
-| **React 18** | UI library |
+| **React 19** | UI library |
 | **TypeScript** | Static typing |
 | **Vite** | Build tool & dev server |
 | **Tailwind CSS** | Utility-first CSS |
-| **React Router v6** | Routing + URL-persisted state |
+| **React Router v7** | Routing + URL-persisted state |
 | **Axios** | HTTP client |
 
 ---
@@ -145,6 +145,8 @@ https://api.github.com/users?per_page=200&page=1&since=0
 | `per_page` | Results per page (1–200, default 10) |
 | `page` | Page number (1-based) |
 | `since` | User ID offset for pagination |
+
+> **Pagination limitation**: The GitHub API does not support true page-based pagination. It uses a `since` parameter — a user ID cursor that returns users whose ID is *greater than* the given value. User IDs on GitHub are not contiguous (accounts get deleted, IDs are skipped), so this app approximates pages by calculating `since = (page - 1) * perPage`. This means results may have gaps or slight inconsistencies between pages, and jumping to a specific page number is not accurate. It is cursor-based navigation dressed as page numbers.
 
 > **Rate limit**: The GitHub API allows 60 unauthenticated requests per hour per IP. If you see errors after browsing many pages, wait a few minutes and try again.
 
