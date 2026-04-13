@@ -20,9 +20,6 @@ export const fetchUsers = async (page: number = 1): Promise<GitHubUser[]> => {
         per_page: PER_PAGE,
         since: since,
       },
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-      },
     });
 
     return response.data;
