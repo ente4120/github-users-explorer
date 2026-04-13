@@ -16,8 +16,9 @@ A React application that displays GitHub users with filtering and pagination fun
 
 - **Step 8**: Final refinements (retry button, loading UX, code cleanup, perPageOptions deduplication)
 
+- **Step 9**: Docker setup (multi-stage build, Nginx, React Router support)
+
 ### In Progress 🔄
-- Step 9: Docker setup
 - Step 10: Final documentation
 
 ---
@@ -124,9 +125,9 @@ tsconfig.json           # TypeScript configuration
 - "No users found" when filter returns empty
 - Disabled navigation during loading
 
-### 6. Docker Setup ⏳
-- Dockerfile for containerization
-- Multi-stage build for optimization
+### 6. Docker Setup ✅
+- Multi-stage Dockerfile (Node build → Nginx serve)
+- `docker-compose.yml` for easy startup
 
 ---
 
@@ -239,11 +240,22 @@ App → Home → Header
 
 ## 🐳 Docker
 
-Docker setup will include:
-- Node.js base image
-- Multi-stage build (build → serve)
-- Optimized image size
-- Environment configuration
+**With docker-compose (recommended):**
+```bash
+docker-compose up --build
+```
+App available at `http://localhost:8080`
+
+**With Docker directly:**
+```bash
+docker build -t github-users-explorer .
+docker run -p 8080:80 github-users-explorer
+```
+
+**Stack:**
+- `node:20-alpine` — build stage
+- `nginx:alpine` — serve stage (optimized final image)
+- React Router URLs handled via `try_files` so deep links and refreshes work correctly
 
 *Implementation in Step 9*
 
