@@ -135,6 +135,11 @@ App → Home → Header (navbar)
 
 **Endpoint**: `https://api.github.com/users`
 
+**Example request**:
+```
+https://api.github.com/users?per_page=200&page=1&since=0
+```
+
 | Parameter | Description |
 |-----------|-------------|
 | `per_page` | Results per page (1–200, default 10) |
