@@ -28,31 +28,46 @@ A React application that displays GitHub users with filtering and pagination fun
 ```
 src/
 ├── components/          # Reusable React components
-│   ├── UserList.tsx
 │   ├── UserCard.tsx
+│   ├── UserList.tsx
 │   ├── FilterInput.tsx
 │   ├── LoadingSpinner.tsx
-│   └── EmptyState.tsx
+│   ├── EmptyState.tsx
+│   └── index.ts
 │
-├── pages/              # Page components
+├── pages/               # Page components
 │   └── Home.tsx
 │
-├── services/           # API service layer
-│   └── githubAPI.ts
+├── services/            # API service layer
+│   ├── githubAPI.ts
+│   └── index.ts
 │
-├── hooks/              # Custom React hooks
-│   └── useGitHubUsers.ts
+├── hooks/               # Custom React hooks
+│   ├── useGitHubUsers.ts
+│   └── index.ts
 │
-├── types/              # TypeScript interfaces
-│   └── github.ts
+├── types/               # TypeScript interfaces
+│   ├── github.ts
+│   └── index.ts
 │
-├── App.tsx             # Main App component with routing
-├── index.css           # Global styles
-└── main.tsx            # React entry point
+├── App.tsx              # Main App component with routing
+├── index.css            # Global styles
+└── main.tsx             # React entry point
 
-public/                 # Static assets
-README.md               # This file
-tsconfig.json           # TypeScript configuration
+public/
+├── favicon.svg
+└── icons.svg
+
+Dockerfile               # Multi-stage Docker build
+docker-compose.yml       # Docker Compose config
+.dockerignore
+.gitignore
+index.html               # Vite entry point
+package.json
+tailwind.config.js
+tsconfig.json
+tsconfig.node.json
+vite.config.js
 ```
 
 ---
@@ -185,6 +200,8 @@ Manages all data fetching, pagination, and filtering state. Syncs `page` and `pe
 - ✅ Client-side filtering with `useMemo`
 - ✅ Filter resets on page or perPage change
 - ✅ Stale request cancellation via cleanup flag
+
+> **Virtual / Infinite Scroll ready** — The hook exposes `hasNext` and `goNext` which are all that's needed to drive an infinite scroll implementation. To switch: accumulate pages instead of replacing, and trigger `goNext` on scroll-to-bottom.
 
 **Usage:**
 ```typescript

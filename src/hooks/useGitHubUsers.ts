@@ -8,6 +8,16 @@ const DEFAULT_PER_PAGE = 10
 const MIN_PER_PAGE = 1
 const MAX_PER_PAGE = 200
 
+/**
+ * Custom hook for fetching and managing GitHub users.
+ *
+ * Currently implements Previous/Next pagination with URL-persisted state.
+ *
+ * The hook is also compatible with virtual/infinite scroll — `hasNext` signals
+ * whether more data is available and `goNext` fetches the next page.
+ * To switch to infinite scroll: accumulate pages in `allUsers` instead of
+ * replacing, and call `goNext` on scroll-to-bottom instead of a button click.
+ */
 export function useGitHubUsers() {
   const [searchParams, setSearchParams] = useSearchParams()
   const page = Math.max(1, Number(searchParams.get('page')) || 1)
