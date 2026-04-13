@@ -7,20 +7,17 @@ A React application that displays GitHub users with filtering and pagination fun
 ### Completed Steps ✅
 - **Step 1**: Vite + React + Tailwind CSS initialized
 - **Step 2**: Folder structure created
-- **Step 3**: API service layer created (`githubAPI.js`)
+- **Step 3**: API service layer created (`githubAPI.ts`)
 - **Step 4**: Custom hook created (`useGitHubUsers.ts`)
+- **Step 5**: Components built (`UserCard`, `UserList`, `FilterInput`, `LoadingSpinner`, `EmptyState`)
+- **Step 6**: Pagination implemented (Previous/Next buttons, page number, URL params, filter reset on navigation)
+- **Step 7**: Filtering implemented (real-time, case-insensitive, clears on page change)
 - **Dependencies**: React Router, Axios installed
 
 ### In Progress 🔄
-- Step 5: Components (UserCard, UserList, etc)
-- Step 6: Filtering functionality
-- Step 7: Pagination functionality
 - Step 8: Final refinements
 - Step 9: Docker setup
 - Step 10: Final documentation
-
-### Not Started ⏳
-- Feature implementations
 
 ---
 
@@ -272,4 +269,4 @@ Docker setup will include:
 
 ---
 
-**Last Updated**: Step 4 - Hook Updated for Infinite Scroll Pattern ✅
+**Last Updated**: Step 5 - Components Built ✅

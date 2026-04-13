@@ -1,78 +1,90 @@
 import { useGitHubUsers } from '../hooks'
+import { FilterInput, UserList, EmptyState, LoadingSpinner } from '../components'
 
 export function Home() {
-  const { users, loading, error, hasMore, loadMore } = useGitHubUsers()
-
-  if (loading && users.length === 0) {
-    return (
-      <div className="min-h-screen bg-primary-50 dark:bg-primary-950 p-4">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-lg text-primary-600 dark:text-primary-400">Loading users...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error && users.length === 0) {
-    return (
-      <div className="min-h-screen bg-primary-50 dark:bg-primary-950 p-4">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-lg text-error">Error: {error.message}</p>
-        </div>
-      </div>
-    )
-  }
+  const {
+    users, loading, error,
+    page, hasNext, hasPrev, goNext, goPrev,
+    filterText, setFilterText,
+  } = useGitHubUsers()
 
   return (
-    <div className="min-h-screen bg-primary-50 dark:bg-primary-950 p-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-primary-950 dark:text-primary-50 mb-8">
-          GitHub Users Explorer
-        </h1>
+    <div className="min-h-screen bg-[#f6f8fa]">
+      {/* Navbar */}
+      <header className="bg-[#24292f] sticky top-0 z-10">
+        <div className="max-w-screen-lg mx-auto px-4 h-14 flex items-center gap-3">
+          <svg width="28" height="28" viewBox="0 0 24 24" className="fill-white flex-shrink-0" aria-hidden="true">
+            <circle cx="14.5" cy="7" r="3" opacity="0.6" />
+            <path d="M14.5 12c-2.1 0-4 .9-5.3 2.3A6.96 6.96 0 0 0 14.5 16c1.5 0 2.9-.5 4-1.3A6.55 6.55 0 0 0 14.5 12z" opacity="0.6" />
+            <circle cx="9.5" cy="8" r="3.2" />
+            <path d="M9.5 13C6.46 13 4 15.46 4 18.5V19h11v-.5C15 15.46 12.54 13 9.5 13z" />
+          </svg>
 
-        <div className="bg-white dark:bg-primary-900 shadow rounded-lg p-6 border border-primary-200 dark:border-primary-800">
-          <h2 className="text-2xl font-semibold text-primary-900 dark:text-primary-50 mb-4">
-            Users List
-          </h2>
-          <ul className="space-y-4">
-            {users.map((user) => (
-              <li
-                key={user.id}
-                className="flex items-center gap-4 p-4 border border-primary-200 dark:border-primary-800 rounded hover:bg-primary-50 dark:hover:bg-primary-800 transition"
-              >
-                <img
-                  src={user.avatar_url}
-                  alt={user.login}
-                  className="w-10 h-10 rounded-full"
-                />
-                <a
-                  href={user.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent-700 hover:text-accent-800 dark:text-accent-500 dark:hover:text-accent-400 font-medium"
-                >
-                  {user.login}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <span className="text-white font-semibold text-sm whitespace-nowrap">
+            GitHub Users Explorer
+          </span>
 
-          {/* Load more button */}
-          {hasMore && (
-            <button
-              onClick={loadMore}
-              disabled={loading}
-              className="mt-6 w-full px-4 py-2 bg-accent-700 hover:bg-accent-800 disabled:bg-primary-400 text-white rounded transition"
-            >
-              {loading ? 'Loading...' : 'Load More'}
-            </button>
-          )}
+        </div>
+      </header>
 
-          {error && users.length > 0 && (
-            <p className="mt-4 text-error">Error loading more: {error.message}</p>
+      {/* Content */}
+      <main className="max-w-screen-lg mx-auto px-4 py-6">
+        <div className="flex items-baseline gap-2 mb-3">
+          <h2 className="text-xl font-semibold text-[#1f2328]">GitHub Users</h2>
+          {!loading && users.length > 0 && filterText && (
+            <span className="text-sm text-[#656d76]">
+              {users.length} result{users.length !== 1 ? 's' : ''}
+            </span>
           )}
         </div>
-      </div>
+
+        <div className="mb-4">
+          <FilterInput value={filterText} onChange={setFilterText} />
+        </div>
+
+        {loading && <LoadingSpinner />}
+
+        {!loading && error && (
+          <div className="p-4 rounded-md border border-[#ffebe9] bg-[#fff8f8] text-[#82071e] text-sm">
+            ⚠️ {error.message}
+          </div>
+        )}
+
+        {!loading && users.length > 0 && <UserList users={users} />}
+
+        {!loading && users.length === 0 && filterText && (
+          <EmptyState message={`No results for "${filterText}"`} icon="🔍" />
+        )}
+
+        {/* Pagination */}
+        {!filterText && (
+          <div className="mt-4 flex items-center justify-between">
+            <button
+              onClick={goPrev}
+              disabled={!hasPrev || loading}
+              className="flex items-center gap-1 px-3 py-[5px] text-sm font-medium text-[#24292f] bg-white border border-[#d0d7de] rounded-md hover:bg-[#f3f4f6] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Previous
+            </button>
+
+            <span className="text-sm text-[#656d76]">Page {page}</span>
+
+            <button
+              onClick={goNext}
+              disabled={!hasNext || loading}
+              className="flex items-center gap-1 px-3 py-[5px] text-sm font-medium text-[#24292f] bg-white border border-[#d0d7de] rounded-md hover:bg-[#f3f4f6] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Next
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        )}
+      </main>
     </div>
   )
 }
