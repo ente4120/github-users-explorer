@@ -125,16 +125,6 @@ README.md              # This file
 
 ---
 
-## 📝 Development Workflow
-
-Each feature will be:
-1. ✏️ Implemented step-by-step
-2. 📖 Documented in README
-3. 💾 Committed to Git with clear messages
-4. ✅ Tested before moving to next step
-
----
-
 ## 📚 Component Architecture
 
 ### Custom Hook: `useGitHubUsers`
@@ -198,41 +188,6 @@ Docker setup will include:
 - Environment configuration
 
 *Implementation in Step 9*
-
----
-
-## 📋 Commit Strategy
-
-Each step will have a dedicated commit:
-```
-Step 1: Initial Vite + React + Tailwind setup
-Step 2: Folder structure and dependencies
-Step 3: API service layer
-Step 4: Custom hook implementation
-... and so on
-```
-
----
-
-## 🤝 Contributing
-
-Follow the step-by-step implementation plan. Each feature should be:
-- Isolated in its own branch/commit
-- Fully tested
-- Documented
-- Reviewed before merge
-
----
-
-## 📄 Original Requirements
-
-See `Task.md` for the original assignment requirements.
-
----
-
-## 📞 Support
-
-For questions about the project structure or implementation approach, refer to this README or the original Task.md file.
 
 ---
 
