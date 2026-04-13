@@ -14,7 +14,7 @@ A React + TypeScript application for browsing GitHub users with real-time filter
 
 ## Tech Stack
 
-| | |
+| Library | Role |
 |---|---|
 | **React 18** | UI library |
 | **TypeScript** | Static typing |
