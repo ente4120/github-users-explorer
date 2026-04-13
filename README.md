@@ -7,10 +7,10 @@ A React application that displays GitHub users with filtering and pagination fun
 ### Completed Steps ✅
 - **Step 1**: Vite + React + Tailwind CSS initialized
 - **Step 2**: Folder structure created
+- **Step 3**: API service layer created (`githubAPI.js`)
 - **Dependencies**: React Router, Axios installed
 
 ### In Progress 🔄
-- Step 3: API service layer
 - Step 4: Custom hook for data fetching
 - Step 5-8: Components & features
 - Step 9: Docker setup
@@ -26,28 +26,29 @@ A React application that displays GitHub users with filtering and pagination fun
 ```
 src/
 ├── components/          # Reusable React components
-│   ├── UserList.jsx
-│   ├── UserCard.jsx
-│   ├── FilterInput.jsx
-│   ├── Pagination.jsx
-│   └── LoadingState.jsx
+│   ├── UserList.tsx
+│   ├── UserCard.tsx
+│   ├── FilterInput.tsx
+│   ├── Pagination.tsx
+│   └── LoadingState.tsx
 │
 ├── pages/              # Page components
-│   └── Home.jsx
+│   └── Home.tsx
 │
 ├── services/           # API service layer
-│   └── githubAPI.js
+│   └── githubAPI.ts
 │
 ├── hooks/              # Custom React hooks
-│   └── useGitHubUsers.js
+│   └── useGitHubUsers.ts
 │
-├── App.jsx             # Main App component with routing
+├── App.tsx             # Main App component with routing
 ├── index.css           # Tailwind CSS setup
-└── main.jsx            # React entry point
+└── main.tsx            # React entry point
 
 public/                 # Static assets
 Dockerfile              # Docker configuration
 README.md              # This file
+tsconfig.json          # TypeScript configuration
 ```
 
 ---
@@ -55,6 +56,7 @@ README.md              # This file
 ## 🛠️ Tech Stack
 
 - **React 18** - UI library
+- **TypeScript** - JavaScript with static typing
 - **Vite** - Build tool & dev server
 - **Tailwind CSS** - Utility-first CSS framework
 - **React Router v6** - Client-side routing
@@ -125,7 +127,43 @@ README.md              # This file
 
 ---
 
-## 📚 Component Architecture
+## � API Service Layer
+
+### File: `src/services/githubAPI.ts`
+
+TypeScript API service handling all GitHub API interactions with proper error handling and type safety:
+
+**Exported Types:**
+- `GitHubUser` - Basic user object from API
+- `GitHubUserProfile` - Extended user profile with detailed info
+- `RateLimit` - API rate limit information
+- `APIError` - Standardized error type
+
+**Exported Functions:**
+
+1. **`fetchUsers(page)`** - Fetch paginated list of GitHub users
+   - Parameter: `page: number` (1-based page number)
+   - Returns: `Promise<GitHubUser[]>`
+   - Uses pagination with `since` parameter for efficient fetching
+
+2. **`fetchUserProfile(username)`** - Fetch single user's detailed profile
+   - Parameter: `username: string` (GitHub username)
+   - Returns: `Promise<GitHubUserProfile>`
+   - Useful for future user details page
+
+3. **`checkRateLimit()`** - Check GitHub API rate limit status
+   - Returns: `Promise<RateLimit>`
+   - Helps monitor API usage
+
+**Features:**
+- ✅ Full TypeScript type safety
+- ✅ Axios-based HTTP client with error handling
+- ✅ Meaningful error messages with status codes
+- ✅ GitHub API v3 headers
+- ✅ Pagination support (10 users per page)
+- ✅ Rate limit aware
+
+---
 
 ### Custom Hook: `useGitHubUsers`
 ```javascript
@@ -191,4 +229,4 @@ Docker setup will include:
 
 ---
 
-**Last Updated**: Step 2 - Folder Structure Setup ✅
+**Last Updated**: Step 3 - API Service Layer + TypeScript Setup ✅
