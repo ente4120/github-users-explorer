@@ -201,6 +201,8 @@ const {
 
 > **Virtual / Infinite Scroll ready** — `hasNext` and `goNext` are all that's needed. To switch: accumulate pages instead of replacing, and call `goNext` on scroll-to-bottom.
 
+> **Performance note**: `UserCard` and `UserList` are candidates for `React.memo` if the list grows significantly. At the current scale (max 200 items, simple DOM nodes), the hook's `useMemo` already prevents unnecessary re-renders by stabilizing the `users` array reference — wrapping components in `memo` was measured to provide no visible gain.
+
 > **Note on React Router**: The app uses React Router solely for `useSearchParams` to persist `page` and `per_page` in the URL. There is only one route. A lighter alternative would be managing `window.location.search` directly, but `useSearchParams` keeps the code clean and idiomatic.
 
 ---
