@@ -3,4 +3,5 @@ export { UserCard } from './UserCard'
 export { UserList } from './UserList'
 export { EmptyState } from './EmptyState'
 export { LoadingSpinner } from './LoadingSpinner'
+export { Pagination } from './Pagination'
 
