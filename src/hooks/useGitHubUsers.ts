@@ -11,11 +11,14 @@ const MAX_PER_PAGE = 200
 /**
  * Custom hook for fetching and managing GitHub users.
  *
- * Currently implements Previous/Next pagination with URL-persisted state.
+ * State variables follow the spec: sources, filteredSources, loading, filterText.
+ * `filteredSources` is derived from `sources` via useMemo rather than useState —
+ * storing derived state in useState requires a useEffect to keep it in sync,
+ * which React explicitly discourages (see: you-might-not-need-an-effect).
  *
  * The hook is also compatible with virtual/infinite scroll — `hasNext` signals
  * whether more data is available and `goNext` fetches the next page.
- * To switch to infinite scroll: accumulate pages in `allUsers` instead of
+ * To switch to infinite scroll: accumulate pages in `sources` instead of
  * replacing, and call `goNext` on scroll-to-bottom instead of a button click.
  */
 export function useGitHubUsers() {
@@ -26,7 +29,7 @@ export function useGitHubUsers() {
     ? rawPerPage
     : DEFAULT_PER_PAGE
 
-  const [allUsers, setAllUsers] = useState<GitHubUser[]>([])
+  const [sources, setSources] = useState<GitHubUser[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<APIError | null>(null)
   const [hasNext, setHasNext] = useState(true)
@@ -42,7 +45,7 @@ export function useGitHubUsers() {
         setError(null)
         const data = await fetchUsers(page, perPage)
         if (!cancelled) {
-          setAllUsers(data)
+          setSources(data)
           setHasNext(data.length === perPage)
         }
       } catch (err) {
@@ -83,18 +86,19 @@ export function useGitHubUsers() {
   const goPrev = () => { if (!loading && page > 1) setPage(page - 1) }
   const retry = () => setRetryCount((c) => c + 1)
 
-  const users = useMemo(() => {
-    if (!filterText.trim()) return allUsers
-    return allUsers.filter((u) =>
+  // Derived from sources — useMemo is preferred over useState + useEffect for derived state
+  const filteredSources = useMemo(() => {
+    if (!filterText.trim()) return sources
+    return sources.filter((u) =>
       u.login.toLowerCase().includes(filterText.toLowerCase())
     )
-  }, [allUsers, filterText])
+  }, [sources, filterText])
 
   const from = (page - 1) * perPage + 1
-  const to = from + allUsers.length - 1
+  const to = from + sources.length - 1
 
   return {
-    users,
+    users: filteredSources,
     loading,
     error,
     page,
